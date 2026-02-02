@@ -1,6 +1,6 @@
 # 📊 Data Weaver
 
-Data Weaver is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
+Scrape Master is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
 
 🔗 **Live Demo:** https://scrape-master-two.vercel.app/
@@ -32,7 +32,7 @@ Follow the steps below to run the project locally:
 git clone https://scrape-master-two.vercel.app/
 
 # Move into the project directory
-cd Data-Weaver
+cd Scrape Master
 
 # Install dependencies
 npm install
