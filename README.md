@@ -3,7 +3,7 @@
 Data Weaver is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
 
-🔗 **Live Demo:** <Link>
+🔗 **Live Demo:** https://scrape-master-two.vercel.app/
 
 ## ✨ Features
 
@@ -29,7 +29,7 @@ Follow the steps below to run the project locally:
 
 ```bash
 # Clone the repository
-git clone <Link>
+git clone https://scrape-master-two.vercel.app/
 
 # Move into the project directory
 cd Data-Weaver
@@ -48,7 +48,7 @@ The project is deployed using Vercel.
 Vercel enables fast builds, automatic deployments, and easy scalability.
 
 ## 🔗 Live Application:
-<Link>
+https://scrape-master-two.vercel.app/
 
 ## 🤝 Contributing
 
