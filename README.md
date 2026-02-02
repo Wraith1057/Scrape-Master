@@ -1,4 +1,4 @@
-# 📊 Data Weaver
+# 📊 Scrape Master
 
 Scrape Master is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
