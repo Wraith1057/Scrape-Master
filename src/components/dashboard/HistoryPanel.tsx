@@ -8,9 +8,10 @@ interface HistoryPanelProps {
   loading: boolean;
   onDelete: (id: string) => void;
   onClearAll?: () => void;
+  isLoggedIn?: boolean;
 }
 
-export function HistoryPanel({ history, loading, onDelete, onClearAll }: HistoryPanelProps) {
+export function HistoryPanel({ history, loading, onDelete, onClearAll, isLoggedIn }: HistoryPanelProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -25,6 +26,34 @@ export function HistoryPanel({ history, loading, onDelete, onClearAll }: History
     if (url.length <= maxLength) return url;
     return url.substring(0, maxLength) + "...";
   };
+
+  // If user is not logged in, don't show any stored history items
+  if (!isLoggedIn) {
+    return (
+      <div className="glass-card rounded-2xl p-6">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-secondary" />
+            </div>
+            <div>
+              <h2 className="font-display font-semibold">Scraping History</h2>
+              <p className="text-sm text-muted-foreground">
+                Login to see and save your scraping history
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="text-center py-8 text-muted-foreground">
+          <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <p className="text-sm mb-1">You are not logged in.</p>
+          <p className="text-xs text-muted-foreground/80">
+            Scraping works without an account, but history is only visible when logged in.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card rounded-2xl p-6">

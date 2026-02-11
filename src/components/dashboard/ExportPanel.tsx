@@ -1,5 +1,5 @@
 import { Download, FileJson, FileText, FileSpreadsheet, Image } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrapedData } from "@/pages/Dashboard";
 import { toast } from "@/hooks/use-toast";
@@ -7,9 +7,25 @@ import { toast } from "@/hooks/use-toast";
 interface ExportPanelProps {
   data: ScrapedData[];
   setImageExportFn?: (fn: (selectedIds: string[]) => Promise<void>) => void;
+  isLoggedIn?: boolean;
 }
 
-export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
+export function ExportPanel({ data, setImageExportFn, isLoggedIn }: ExportPanelProps) {
+  const [typeFilters, setTypeFilters] = useState({
+    Heading: true,
+    Paragraph: true,
+    Image: true,
+    Link: true,
+    Table: true,
+  });
+
+  const filteredData = data.filter((item) => {
+    if (item.dataType in typeFilters) {
+      return (typeFilters as Record<string, boolean>)[item.dataType];
+    }
+    return true;
+  });
+
   useEffect(() => {
     // Set the downloadImages function for ImagePreview to call
     if (setImageExportFn) {
@@ -17,8 +33,21 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
     }
   }, [data, setImageExportFn]);
 
+  const requireLogin = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to download scraped data.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
   const exportAsCSV = () => {
-    if (data.length === 0) {
+    if (!requireLogin()) return;
+    if (filteredData.length === 0) {
       toast({
         title: "No data to export",
         description: "Please scrape some data first.",
@@ -28,7 +57,7 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
     }
 
     const headers = ["ID", "Content", "Data Type", "Source URL", "Timestamp"];
-    const rows = data.map((item) => [
+    const rows = filteredData.map((item) => [
       item.id,
       `"${item.content.replace(/"/g, '""')}"`,
       item.dataType,
@@ -46,7 +75,8 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
   };
 
   const exportAsJSON = () => {
-    if (data.length === 0) {
+    if (!requireLogin()) return;
+    if (filteredData.length === 0) {
       toast({
         title: "No data to export",
         description: "Please scrape some data first.",
@@ -55,7 +85,7 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
       return;
     }
 
-    const json = JSON.stringify(data, null, 2);
+    const json = JSON.stringify(filteredData, null, 2);
     downloadFile(json, "scraped-data.json", "application/json");
 
     toast({
@@ -65,7 +95,8 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
   };
 
   const exportAsTXT = () => {
-    if (data.length === 0) {
+    if (!requireLogin()) return;
+    if (filteredData.length === 0) {
       toast({
         title: "No data to export",
         description: "Please scrape some data first.",
@@ -74,7 +105,7 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
       return;
     }
 
-    const txt = data
+    const txt = filteredData
       .map(
         (item) =>
           `[${item.dataType}]\n${item.content}\nSource: ${item.sourceUrl}\n`
@@ -89,7 +120,8 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
   };
 
   const downloadImages = async (selectedImageIds: string[] = []) => {
-    let imageItems = data.filter((item) => item.dataType === "Image");
+    if (!requireLogin()) return;
+    let imageItems = filteredData.filter((item) => item.dataType === "Image");
 
     // Filter to only selected images if any were selected
     if (selectedImageIds.length > 0) {
@@ -121,7 +153,9 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
       const imagesFolder = zip.folder("images");
       if (!imagesFolder) throw new Error("Failed to create images folder");
 
-      // Download each image with improved error handling
+      const IMAGE_PROXY_URL = "http://localhost:4000/image";
+
+      // Download each image through backend proxy to avoid CORS
       for (let i = 0; i < imageItems.length; i++) {
         const item = imageItems[i];
         try {
@@ -149,45 +183,15 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
             continue;
           }
 
-          // Try to fetch the image with multiple strategies
+          // Fetch image via backend to bypass CORS
           let blob: Blob | null = null;
-
-          // Strategy 1: Direct fetch
           try {
-            const response = await Promise.race([
-              fetch(imageUrl, { 
-                mode: 'cors',
-                credentials: 'omit'
-              }),
-              new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Fetch timeout')), 5000)
-              ),
-            ]) as Response;
-
+            const response = await fetch(`${IMAGE_PROXY_URL}?url=${encodeURIComponent(imageUrl)}`);
             if (response.ok) {
               blob = await response.blob();
             }
-          } catch (directError) {
-            console.log(`Direct fetch failed for ${imageUrl}, trying proxy...`, directError);
-          }
-
-          // Strategy 2: Use CORS proxy if direct fetch fails
-          if (!blob) {
-            try {
-              const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
-              const response = await Promise.race([
-                fetch(proxyUrl),
-                new Promise((_, reject) => 
-                  setTimeout(() => reject(new Error('Proxy timeout')), 5000)
-                ),
-              ]) as Response;
-
-              if (response.ok) {
-                blob = await response.blob();
-              }
-            } catch (proxyError) {
-              console.log(`Proxy fetch failed for ${imageUrl}`, proxyError);
-            }
+          } catch (error) {
+            console.error(`Backend image proxy failed for ${imageUrl}`, error);
           }
 
           // Skip if we couldn't fetch the image
@@ -332,6 +336,40 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
         </div>
       </div>
 
+      {/* Type filters */}
+      <div className="mb-4">
+        <p className="text-xs text-muted-foreground mb-2">
+          Select data types to include in export:
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: "Heading", label: "Headings (H1–H6)" },
+            { key: "Paragraph", label: "Paragraphs" },
+            { key: "Image", label: "Images" },
+            { key: "Link", label: "Anchor Links" },
+            { key: "Table", label: "Tables" },
+          ].map(({ key, label }) => {
+            const active = (typeFilters as Record<string, boolean>)[key];
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() =>
+                  setTypeFilters((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))
+                }
+                className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                  active
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-background border-border text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {exportButtons.map((btn) => (
           <Button
@@ -339,7 +377,7 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
             variant="outline"
             className="h-auto py-4 flex flex-col gap-2 group hover:shadow-lg transition-shadow duration-300"
             onClick={btn.onClick}
-            disabled={data.length === 0}
+            disabled={filteredData.length === 0}
           >
             <div
               className={`w-10 h-10 rounded-xl bg-gradient-to-br ${btn.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
@@ -351,9 +389,14 @@ export function ExportPanel({ data, setImageExportFn }: ExportPanelProps) {
         ))}
       </div>
 
-      {data.length === 0 && (
+      {filteredData.length === 0 && (
         <p className="text-sm text-muted-foreground text-center mt-4">
           Export options will be available after scraping data.
+        </p>
+      )}
+      {!isLoggedIn && (
+        <p className="text-xs text-muted-foreground text-center mt-2">
+          Login to enable downloads for your scraped data.
         </p>
       )}
     </div>

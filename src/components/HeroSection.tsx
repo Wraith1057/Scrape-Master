@@ -45,13 +45,26 @@ export function HeroSection() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in"
+            style={{ animationDelay: "0.3s" }}
+          >
+            {/* Existing primary CTA */}
             <Link to="/dashboard">
               <Button variant="hero" size="xl" className="group">
                 Start Scraping
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
+
+            {/* Auth CTA between Start Scraping and View Features */}
+            <Link to="/auth">
+              <Button variant="heroOutline" size="xl" className="group">
+                Login &amp; SignUp
+              </Button>
+            </Link>
+
+            {/* Existing secondary CTA */}
             <a href="#features">
               <Button variant="heroOutline" size="xl" className="group">
                 <Play className="w-5 h-5" />
