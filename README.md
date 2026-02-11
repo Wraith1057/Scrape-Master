@@ -51,6 +51,45 @@ npm install
 # Start the development server
 npm start
 ```
+
+## 📸 Screenshots
+
+### 🔐 Login & SignUp Page
+<p>
+  Login Page<br><br>
+  <img src="./screenshots/login.png" width="600"/>
+  <br/><br/>
+  SignUp Page<br><br>
+  <img src="./screenshots/signup.png" width="600"/>
+</p>
+
+---
+
+### 🏠 Homepage
+<p>
+  Light Mode<br><br>
+  <img src="./screenshots/homepage.png" width="600"/>
+  <br/><br/>
+  Dark Mode<br><br>
+  <img src="./screenshots/homepageDM.png" width="600"/>
+</p>
+
+---
+
+### ✨ Features Page
+<p>
+  <img src="./screenshots/features.png" width="600"/>
+</p>
+
+---
+
+### 📊 Dashboard
+<p>
+  <img src="./screenshots/dashboard1.png" width="600"/>
+  <br/><br/>
+  <img src="./screenshots/dashboard2.png" width="600"/>
+</p>
+
 ---
 
 ## 👨‍💻 Author
