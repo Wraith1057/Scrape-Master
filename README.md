@@ -4,8 +4,6 @@ Scrape Master is a modern and responsive web application designed to collect, ma
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
 Now includes a secure **Login & Signup authentication system** for personalized user access.
 
-🔗 **Live Demo:** https://scrape-master-two.vercel.app/
-
 ## ✨ Features
 
 - 📁 Structured data management
@@ -18,10 +16,11 @@ Now includes a secure **Login & Signup authentication system** for personalized 
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React.js
-- **Styling:** CSS / Tailwind CSS
+- **Frontend:** React.js, JavaScript
+- **Styling:** Tailwind CSS, CSS3
+- **Authentication:** Supabase Auth
+- **Backend Services:** Supabase
 - **Version Control:** Git & GitHub
-- **Deployment:** Vercel
 
 ---
 
@@ -57,40 +56,6 @@ npm install
 npm start
 ```
 ---
-
-## 🌍 Deployment
-
-The project is deployed using Vercel.
-Vercel enables fast builds, automatic deployments, and easy scalability.
-
-## 🔗 Live Application:
-https://scrape-master-two.vercel.app/
-
-## 🤝 Contributing
-
-Contributions are welcome and appreciated.
-
-# Steps to contribute:
-
-Fork the repository
-
-Create a new branch (feature/new-feature)
-
-Commit your changes
-
-Push to your fork
-
-Create a Pull Request
-
-## 🔒 Security Notice
-
-Do not commit sensitive information such as API keys, secrets, or .env files.
-Always use environment variables for secure data handling.
-
-## 📜 License
-
-This project is licensed under the MIT License.
-You are free to use, modify, and distribute this project.
 
 ## 👨‍💻 Author
 
