@@ -1,5 +1,8 @@
 # 📊 Scrape Master
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aaf4d429513e0fb0dbcf32e638cc8bdc74443ab
 
 Scrape Master is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
