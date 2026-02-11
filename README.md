@@ -22,8 +22,6 @@ Now includes a secure **Login & Signup authentication system** for personalized 
 - **Backend Services:** Supabase
 - **Version Control:** Git & GitHub
 
----
-
 ## 🔐 Authentication System
 
 This project includes a secure authentication system that enables:
@@ -35,8 +33,6 @@ This project includes a secure authentication system that enables:
 
 Authentication is implemented using Supabase Auth, ensuring secure credential handling and session persistence.
 Sensitive configuration details are managed using environment variables to maintain security best practices.
-
----
 
 ## ⚙️ Installation and Setup
 
