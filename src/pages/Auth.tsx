@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -9,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -18,6 +20,13 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"success" | "error">("success");
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate("/dashboard");
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,32 +41,35 @@ const Auth = () => {
     setLoading(true);
     try {
       if (mode === "login") {
-        // Prevent login before an account has been created on this device.
-        const hasCreatedAccount = localStorage.getItem("scrapeMasterHasAccount");
-        if (!hasCreatedAccount) {
-          setMessageType("error");
-          setMessage("Please create an account first, then log in.");
-          return;
-        }
-
         const { error } = await signIn(email, password);
         if (error) {
-          setMessageType("error");
-          setMessage(error.message ?? "Unable to log you in.");
+          // Check if it's a rate limit error
+          if (error.message?.includes('rate limit') || error.message?.includes('Rate limit')) {
+            setMessageType("error");
+            setMessage("Rate limit exceeded. Please wait a few minutes before trying again, or disable email confirmation in your Supabase dashboard for development.");
+          } else {
+            setMessageType("error");
+            setMessage(error.message ?? "Unable to log you in.");
+          }
         } else {
           setMessageType("success");
           setMessage("Logged in successfully.");
+          // Navigation will happen via useEffect when user state updates
         }
       } else {
         const { error } = await signUp(email, password, fullName);
         if (error) {
-          setMessageType("error");
-          setMessage(error.message ?? "Unable to create your account.");
+          // Check if it's a rate limit error
+          if (error.message?.includes('rate limit') || error.message?.includes('Rate limit')) {
+            setMessageType("error");
+            setMessage("Rate limit exceeded. Please wait a few minutes before trying again, or disable email confirmation in your Supabase dashboard for development.");
+          } else {
+            setMessageType("error");
+            setMessage(error.message ?? "Unable to create your account.");
+          }
         } else {
           setMessageType("success");
-          setMessage("Account created successfully.");
-          // Mark that this device has successfully created an account.
-          localStorage.setItem("scrapeMasterHasAccount", "true");
+          setMessage("Account created successfully. Please check your email to verify your account, or disable email confirmation in your Supabase dashboard for development.");
         }
       }
     } finally {

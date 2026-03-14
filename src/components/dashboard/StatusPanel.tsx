@@ -3,12 +3,12 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StatusPanelProps {
-  isScrapin: boolean;
+  isScraping: boolean;
   progress: number;
   logs: string[];
 }
 
-export function StatusPanel({ isScrapin, progress, logs }: StatusPanelProps) {
+export function StatusPanel({ isScraping, progress, logs }: StatusPanelProps) {
   return (
     <div className="glass-card rounded-2xl p-6">
       <div className="flex items-center gap-3 mb-6">
@@ -28,7 +28,7 @@ export function StatusPanel({ isScrapin, progress, logs }: StatusPanelProps) {
           <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
         </div>
         <Progress value={progress} className="h-2" />
-        {isScrapin && (
+        {isScraping && (
           <div className="flex items-center gap-2 mt-3">
             <div className="relative">
               <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />

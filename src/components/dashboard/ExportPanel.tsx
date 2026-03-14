@@ -319,7 +319,9 @@ export function ExportPanel({ data, setImageExportFn, isLoggedIn }: ExportPanelP
     {
       icon: Image,
       label: "Images (ZIP)",
-      onClick: downloadImages,
+      onClick: () => {
+        void downloadImages();
+      },
       color: "from-rose-500 to-rose-400",
     },
   ];

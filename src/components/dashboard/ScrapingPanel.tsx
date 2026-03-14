@@ -16,10 +16,10 @@ import {
 interface ScrapingPanelProps {
   onStartScraping: (url: string, options: any) => void;
   onClear: () => void;
-  isScrapin: boolean;
+  isScraping: boolean;
 }
 
-export function ScrapingPanel({ onStartScraping, onClear, isScrapin }: ScrapingPanelProps) {
+export function ScrapingPanel({ onStartScraping, onClear, isScraping }: ScrapingPanelProps) {
   const [url, setUrl] = useState("");
   const [dataType, setDataType] = useState("text");
   const [urlError, setUrlError] = useState("");
@@ -197,9 +197,9 @@ export function ScrapingPanel({ onStartScraping, onClear, isScrapin }: ScrapingP
             variant="hero"
             className="flex-1"
             onClick={handleSubmit}
-            disabled={isScrapin}
+            disabled={isScraping}
           >
-            {isScrapin ? (
+            {isScraping ? (
               <>
                 <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                 Scraping...
@@ -211,7 +211,7 @@ export function ScrapingPanel({ onStartScraping, onClear, isScrapin }: ScrapingP
               </>
             )}
           </Button>
-          <Button variant="outline" onClick={onClear} disabled={isScrapin}>
+          <Button variant="outline" onClick={onClear} disabled={isScraping}>
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>

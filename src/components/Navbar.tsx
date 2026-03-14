@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Zap, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -22,6 +24,21 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const links = useMemo(() => {
+    return navLinks;
+  }, [user]);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
+  const fullName =
+    (user?.user_metadata && ((user.user_metadata as Record<string, unknown>).full_name as string | undefined)) ||
+    (user?.user_metadata && ((user.user_metadata as Record<string, unknown>).name as string | undefined)) ||
+    "";
 
   const handleNavClick = (path: string) => {
     if (path.includes("#")) {
@@ -65,7 +82,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <button
                 key={link.name}
                 onClick={() => handleNavClick(link.path)}
@@ -82,9 +99,60 @@ export function Navbar() {
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-4">
             <ThemeToggle />
-            <Link to="/dashboard">
-              <Button variant="hero" size="sm">Dashboard</Button>
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full"
+                      aria-label="Profile"
+                    >
+                      <User className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-72">
+                    <DropdownMenuLabel className="space-y-1">
+                      <div className="text-sm font-medium leading-none">{fullName || "Profile"}</div>
+                      <div className="text-xs text-muted-foreground break-all">{user.email}</div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="flex items-center justify-between gap-3 cursor-default focus:bg-accent"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <span className="text-sm">Theme</span>
+                      <ThemeToggle />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        void handleLogout();
+                      }}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-destructive"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="hero" size="sm">Login</Button>
+              </Link>
+            )}
           </div> 
 
           {/* Mobile Menu Button */}
@@ -105,7 +173,7 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden glass-card border-t animate-fade-in">
           <div className="container mx-auto px-4 py-4 space-y-4">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <button
                 key={link.name}
                 onClick={() => {
@@ -119,10 +187,29 @@ export function Navbar() {
                 {link.name}
               </button>
             ))}
-            <div className="flex gap-2 pt-4 border-t border-border">
-              <Link to="/dashboard" className="flex-1">
-                <Button variant="hero" className="w-full">Dashboard</Button>
-              </Link>
+            <div className="flex gap-2 pt-4 border-t border-border items-center">
+              <ThemeToggle />
+              {user ? (
+                <Button
+                  variant="ghost"
+                  className="flex-1 flex items-center justify-center gap-2 text-muted-foreground hover:text-destructive"
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </Button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="flex-1"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Button variant="hero" className="w-full">Login</Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

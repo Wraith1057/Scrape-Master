@@ -21,22 +21,21 @@ export interface ScrapedData {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { addHistoryItem, history, loading: historyLoading, deleteHistoryItem, clearHistory } = useScrapingHistory();
   const imageExportRef = useRef<(selectedIds: string[]) => void>(async () => {});
   
-  const [isScrapin, setIsScraping] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
   const [progress, setProgress] = useState(0);
   const [logs, setLogs] = useState<string[]>([]);
   const [scrapedData, setScrapedData] = useState<ScrapedData[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Redirect to auth if not authenticated
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hasAccount = localStorage.getItem("scrapeMasterHasAccount");
-      setIsLoggedIn(!!hasAccount);
+    if (!authLoading && !user) {
+      navigate("/auth");
     }
-  }, []);
+  }, [user, authLoading, navigate]);
 
 
   const performScraping = async (startUrl: string, options: any) => {
@@ -243,8 +242,8 @@ const Dashboard = () => {
       setIsScraping(false);
       setProgress(100);
 
-      // Save to history only if logged in (based on local flag)
-      if (isLoggedIn) {
+      // Save to history only if logged in
+      if (user) {
         try {
           addHistoryItem(
             startUrl,
@@ -302,10 +301,10 @@ const Dashboard = () => {
               <ScrapingPanel 
                 onStartScraping={performScraping}
                 onClear={clearAll}
-                isScrapin={isScrapin}
+                isScraping={isScraping}
               />
               <StatusPanel 
-                isScrapin={isScrapin}
+                isScraping={isScraping}
                 progress={progress}
                 logs={logs}
               />
@@ -314,7 +313,7 @@ const Dashboard = () => {
                 loading={historyLoading}
                 onDelete={deleteHistoryItem}
                 onClearAll={clearHistory}
-                isLoggedIn={isLoggedIn}
+                isLoggedIn={!!user}
               />
             </div>
 
@@ -328,7 +327,7 @@ const Dashboard = () => {
               <ExportPanel 
                 data={scrapedData}
                 setImageExportFn={(fn) => { imageExportRef.current = fn; }}
-                isLoggedIn={isLoggedIn}
+                isLoggedIn={!!user}
               />
             </div>
           </div>
