@@ -1,20 +1,20 @@
-# 📊 Scrape Master
+# Scrape Master
 
 Scrape Master is a modern and responsive web application designed to collect, manage, and present data in an organized and user-friendly way.
 The project focuses on simplicity, performance, and scalability, making it suitable for real-world applications and learning purposes.
 Now includes a secure **Login & Signup authentication system** for personalized user access.
 
-## ✨ Features
+## Features
 
-- 📁 Structured data management
-- 🔐 User Authentication (Login & Signup)
-- 🖥️ Clean and responsive user interface
-- ⚡ Fast performance and smooth interactions
-- 🌐 Web-based application accessible from any device
-- 🚀 Deployed on Vercel for high availability
-- 🧩 Scalable and maintainable project structure
+-  Structured data management
+-  User Authentication (Login & Signup)
+-  Clean and responsive user interface
+-  Fast performance and smooth interactions
+-  Web-based application accessible from any device
+-  Deployed on Vercel for high availability
+-  Scalable and maintainable project structure
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** React.js, JavaScript
 - **Styling:** Tailwind CSS, CSS3
@@ -22,7 +22,7 @@ Now includes a secure **Login & Signup authentication system** for personalized 
 - **Backend Services:** Supabase
 - **Version Control:** Git & GitHub
 
-## 🔐 Authentication System
+## Authentication System
 
 This project includes a secure authentication system that enables:
 
@@ -34,7 +34,7 @@ This project includes a secure authentication system that enables:
 Authentication is implemented using Supabase Auth, ensuring secure credential handling and session persistence.
 Sensitive configuration details are managed using environment variables to maintain security best practices.
 
-## ⚙️ Installation and Setup
+## Installation and Setup
 
 Follow the steps below to run the project locally:
 
@@ -52,9 +52,9 @@ npm install
 npm start
 ```
 
-## 📸 Screenshots
+## Screenshots
 
-### 🔐 Login & SignUp Page
+### Login & SignUp Page
 <p>
   Login Page<br><br>
   <img src="./screenshots/login.png" width="600"/>
@@ -65,7 +65,7 @@ npm start
 
 ---
 
-### 🏠 Homepage
+### Homepage
 <p>
   Light Mode<br><br>
   <img src="./screenshots/homepage.png" width="600"/>
@@ -76,14 +76,14 @@ npm start
 
 ---
 
-### ✨ Features Page
+### Features Page
 <p>
   <img src="./screenshots/features.png" width="600"/>
 </p>
 
 ---
 
-### 📊 Dashboard
+### Dashboard
 <p>
   <img src="./screenshots/dashboard1.png" width="600"/>
   <br/><br/>
@@ -92,7 +92,7 @@ npm start
 
 ---
 
-## 👨‍💻 Author
+## Author
 
-Abhi
+Abheesh S Mogaveera
 GitHub: https://github.com/Wraith1057
